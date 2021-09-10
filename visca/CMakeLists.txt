@@ -7,7 +7,9 @@ IF (WIN32)
 		libvisca_serial_win32.c
 		libvisca_tcp.c
 	)
-	SET_TARGET_PROPERTIES(visca PROPERTIES COMPILE_FLAGS "-DDLL_EXPORTS=1")
+	if(BUILD_SHARED_LIBS)
+		SET_TARGET_PROPERTIES(visca PROPERTIES COMPILE_FLAGS "-DDLL_EXPORTS=1")
+	endif()
 	target_link_libraries(visca wsock32 ws2_32)
 ELSE()
 	ADD_LIBRARY(visca
