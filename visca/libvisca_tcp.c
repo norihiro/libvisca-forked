@@ -14,7 +14,11 @@
 #endif
 
 typedef struct _VISCA_tcp_ctx {
+#ifdef VISCA_WIN
+	SOCKET sockfd;
+#else
 	int sockfd;
+#endif
 } VISCA_tcp_ctx_t;
 
 static int visca_tcp_cb_write(VISCAInterface_t *iface, const void *buf, int length)
@@ -35,12 +39,12 @@ static int visca_tcp_cb_close(VISCAInterface_t *iface)
 		return VISCA_FAILURE;
 	VISCA_tcp_ctx_t *ctx = iface->ctx;
 
-	// read the rest of the data: (should be empty)
-	unsigned char packet[3000];
-	uint32_t buffer_size = 3000;
-
 	if (ctx->sockfd != -1) {
+#ifdef VISCA_WIN
+		closesocket(ctx->sockfd);
+#else
 		close(ctx->sockfd);
+#endif
 		free(ctx);
 		iface->ctx = NULL;
 		return VISCA_SUCCESS;
@@ -79,7 +83,11 @@ static int initialize_socket(VISCA_tcp_ctx_t *ctx, const char *hostname, int por
 	memcpy(&server.sin_addr, servhost->h_addr, servhost->h_length);
 	if (connect(ctx->sockfd, (struct sockaddr *)&server, sizeof(server))) {
 		fprintf(stderr, "Error: cannot connect to host \"%s\" port %d\n", hostname, port);
+#ifdef VISCA_WIN
+		closesocket(ctx->sockfd);
+#else
 		close(ctx->sockfd);
+#endif
 		ctx->sockfd = -1;
 		return 1;
 	}
