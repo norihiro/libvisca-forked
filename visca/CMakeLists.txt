@@ -6,6 +6,7 @@ IF (WIN32)
 		libvisca_win32.c
 		libvisca_serial_win32.c
 		libvisca_tcp.c
+		libvisca_udp.c
 	)
 	SET_TARGET_PROPERTIES(visca PROPERTIES COMPILE_FLAGS "-DDLL_EXPORTS=1")
 	target_link_libraries(visca wsock32 ws2_32)
@@ -15,6 +16,7 @@ ELSE()
 		libvisca_posix.c
 		libvisca_serial_posix.c
 		libvisca_tcp.c
+		libvisca_udp.c
 	)
 
 SET_TARGET_PROPERTIES(visca PROPERTIES SOVERSION 0.2.0)
